@@ -1,7 +1,7 @@
-import { LightCapabilities } from "./light-capabilities";
-import { LightConfig } from "./light-config";
-import { LightState } from "./light-state";
-import { LightSwUpdate } from "./light-sw-update";
+import { LightCapabilities } from "./light-capabilities.ts";
+import { LightConfig } from "./light-config.ts";
+import { LightState } from "./light-state.ts";
+import { LightSwUpdate } from "./light-sw-update.ts";
 
 export interface LightResponse {
   state: LightState;

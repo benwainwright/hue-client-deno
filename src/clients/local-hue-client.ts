@@ -1,14 +1,10 @@
-import * as https from "https";
-import axios, { AxiosResponse } from "axios";
-import { Client } from "../types/client";
-import { CA } from "./ca";
+import { Client } from "../types/client.ts";
 import {
   HttpMethod,
-  HueErrorType,
   isError,
   UsernameRequestType,
-  UsernameResponseType
-} from "../types";
+  UsernameResponseType,
+} from "../types/mod.ts";
 
 export const DEFAULT_DEVICE_TYPE = "hue-client";
 
@@ -17,28 +13,35 @@ export class LocalHueClient implements Client {
   public constructor(
     private ip: string,
     deviceType?: string,
-    private username?: string
+    private username?: string,
   ) {
     this.deviceType = deviceType ?? DEFAULT_DEVICE_TYPE;
   }
 
-  private async makeRequest<T, R>(method: HttpMethod, path: string, body?: T) {
-    const { data } = await axios.request<T, AxiosResponse<R | HueErrorType>>({
-      httpsAgent: new https.Agent({ ca: CA }),
-      method,
-      url: `https://${this.ip}/api${path}`,
-      data: body
-    });
+  private async makeRequest<T, R>(
+    method: HttpMethod,
+    path: string,
+    body?: T,
+  ): Promise<R> {
+    const response = await fetch(
+      `https://${this.ip}/api${path}`,
+      {
+        method,
+        body: JSON.stringify(body),
+      },
+    );
+
+    const data = await response.json();
 
     if (isError(data)) {
       const [
         {
-          error: { type, address, description }
-        }
+          error: { type, address, description },
+        },
       ] = data;
       const addressString = address ? `:${address}` : ``;
       throw new Error(
-        `Gateway returned error response [${type}${addressString}]: ${description}`
+        `Gateway returned error response [${type}${addressString}]: ${description}`,
       );
     }
 
@@ -51,13 +54,13 @@ export class LocalHueClient implements Client {
         UsernameRequestType,
         UsernameResponseType
       >("POST", "", {
-        devicetype: this.deviceType
+        devicetype: this.deviceType,
       });
 
       const [
         {
-          success: { username }
-        }
+          success: { username },
+        },
       ] = response;
 
       this.username = username;
@@ -68,12 +71,12 @@ export class LocalHueClient implements Client {
   private async makeAuthenticatedRequest<T = never, R = never>(
     method: HttpMethod,
     path: string,
-    body?: T
+    body?: T,
   ) {
     return await this.makeRequest<T, R>(
       method,
       `/${await this.getUsername()}${path}`,
-      body
+      body,
     );
   }
 

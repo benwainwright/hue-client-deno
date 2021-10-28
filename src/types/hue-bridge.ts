@@ -1,4 +1,4 @@
-import { Light } from "../resources";
+import { Light } from "../resources.ts";
 
 export interface HueBridge {
   username: string | undefined;

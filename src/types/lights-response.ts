@@ -1,3 +1,3 @@
-import { LightResponse } from "./light-response";
+import { LightResponse } from "./light-response.ts";
 
 export type LightsResponse = { [key: string]: LightResponse };

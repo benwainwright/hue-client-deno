@@ -1,6 +1,6 @@
-import { IpAddress } from "./ip-address";
-import { MacAddress } from "./mac-address";
-import { UpdateableBridgeConfig } from "./updateable-bridge-config";
+import { IpAddress } from "./ip-address.ts";
+import { MacAddress } from "./mac-address.ts";
+import { UpdateableBridgeConfig } from "./updateable-bridge-config.ts";
 
 export type BridgeConfig = UpdateableBridgeConfig & {
   ipaddress: IpAddress;
