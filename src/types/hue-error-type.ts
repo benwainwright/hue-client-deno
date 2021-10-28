@@ -1,7 +1,7 @@
 export type HueErrorType = [
   {
     error: { type: number; address: string; description: string };
-  }
+  },
 ];
 
 export const isError = (response: unknown): response is HueErrorType =>
