@@ -23,12 +23,11 @@ export class LocalHueClient implements Client {
     path: string,
     body?: T,
   ): Promise<R> {
+    const options = body ? { method, body: JSON.stringify(body) } : { method };
+
     const response = await fetch(
-      `https://${this.ip}/api${path}`,
-      {
-        method,
-        body: JSON.stringify(body),
-      },
+      `http://${this.ip}/api${path}`,
+      options,
     );
 
     const data = await response.json();
